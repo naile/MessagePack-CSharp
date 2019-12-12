@@ -32,6 +32,7 @@ namespace MessagePack.Resolvers
         private static readonly IReadOnlyList<IFormatterResolver> Resolvers = new IFormatterResolver[]
         {
             NativeDateTimeResolver.Instance, // Native c# DateTime format, preserving timezone
+            ForceSizePrimitiveObjectResolver.Instance, // Preserve particular integer types
             BuiltinResolver.Instance, // Try Builtin
             AttributeFormatterResolver.Instance, // Try use [MessagePackFormatter]
 #if !ENABLE_IL2CPP
@@ -41,7 +42,7 @@ namespace MessagePack.Resolvers
             DynamicObjectResolver.Instance, // Try Object
 #endif
             DynamicContractlessObjectResolverAllowPrivate.Instance, // Serializes keys as strings
-            new TypelessObjectResolver(),
+            TypelessObjectResolver.Instance,
         };
 
         static TypelessContractlessStandardResolver()

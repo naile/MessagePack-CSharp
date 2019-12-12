@@ -18,7 +18,7 @@ namespace Assets.Scripts.Tests
             // adhoc resolver registration to running test.
 #if ENABLE_IL2CPP
 
-            StaticCompositeResolver.Register(new IMessagePackFormatter[]{
+            StaticCompositeResolver.Instance.Register(new IMessagePackFormatter[]{
                 new ListFormatter<int>(),
                 new LinkedListFormatter<int>(),
                 new QueueFormatter<int>(),
@@ -93,7 +93,7 @@ namespace Assets.Scripts.Tests
 
                 new ArrayFormatter<ComplexdUnion.A>(),
                 new ArrayFormatter<ComplexdUnion.A2>(),
-
+                new ArrayFormatter<SharedData.SimpleStringKeyData>(),
 
         },
             new IFormatterResolver[]{

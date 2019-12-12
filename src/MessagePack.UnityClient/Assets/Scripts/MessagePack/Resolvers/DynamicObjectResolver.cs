@@ -1,4 +1,4 @@
-﻿// Copyright (c) All contributors. All rights reserved.
+// Copyright (c) All contributors. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 #if !(UNITY_2018_3_OR_NEWER && NET_STANDARD_2_0)
@@ -345,6 +345,11 @@ namespace MessagePack.Internal
             if (serializationInfo == null)
             {
                 return null;
+            }
+
+            if (!(type.IsPublic || type.IsNestedPublic))
+            {
+                throw new MessagePackSerializationException("Building dynamic formatter only allows public type. Type: " + type.FullName);
             }
 
             Type formatterType = typeof(IMessagePackFormatter<>).MakeGenericType(type);
@@ -705,12 +710,13 @@ namespace MessagePack.Internal
                 il.EmitLdc_I4(len);
                 il.EmitCall(MessagePackWriterTypeInfo.WriteArrayHeader);
 
+                var index = 0;
                 for (int i = 0; i <= maxKey; i++)
                 {
                     ObjectSerializationInfo.EmittableMember member;
                     if (intKeyMap.TryGetValue(i, out member))
                     {
-                        EmitSerializeValue(il, type.GetTypeInfo(), member, i, tryEmitLoadCustomFormatter, argWriter, argValue, argOptions, localResolver);
+                        EmitSerializeValue(il, type.GetTypeInfo(), member, index++, tryEmitLoadCustomFormatter, argWriter, argValue, argOptions, localResolver);
                     }
                     else
                     {
